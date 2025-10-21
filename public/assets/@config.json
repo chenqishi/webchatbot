@@ -1,0 +1,38 @@
+{
+    "header": {
+      "logoUrl": "./assets/favicon-light.svg",
+      "name": "ChatAI"
+    },
+    "main": {
+      "title": "Welcome to Chat AI",
+      "subtitle": "Ask me anything to get started!",
+      "placeholder": "Ask me anything",
+      "power": {
+        "image": "./assets/favicon.svg",
+        "href": "https://marsmind.co/"
+      }
+    },
+    "message": {
+      "fontSize": "14px",
+      "fontFamily": "inherit",
+      "userBackground": "#1e3a8a",
+      "userColor": "#ffffff",
+      "aiBackground": "#ececf0",
+      "aiColor": "#212529"
+    },
+    "chat": {
+      "endpoint": "https://api.marsmind.co/custom-im/chat-messages",
+      "client": "jprefund",
+      "secret": "RhTJXR6mGYlxqZYX"
+    },
+    "s3": {
+      "endpoint": "https://s3.ap-northeast-1.amazonaws.com",
+      "accessKeyId": "AKIAQMEY6F4FYLFGR4ZL",
+      "secretAccessKey": "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",
+      "region": "ap-northeast-1",
+      "bucketName":"marsmindwebresources", 
+      "addressing_style": "path",
+      "s3ForcePathStyle": true,
+      "signatureVersion": "v4"
+    }
+  }
