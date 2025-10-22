@@ -31,9 +31,9 @@ fi
 TEMP_DIR=$(mktemp -d)
 echo "创建临时目录: $TEMP_DIR"
 
-# 复制dist目录内容到临时目录，但排除public/assets
+# 复制dist目录内容到临时目录，但排除assets目录（保留服务器上的配置文件）
 echo "准备部署文件..."
-rsync -av --exclude='public/assets/' dist/ "$TEMP_DIR/"
+rsync -av --exclude='assets/' dist/ "$TEMP_DIR/"
 
 # 读取部署路径文件并部署到每个目录
 echo "开始部署到目标目录..."

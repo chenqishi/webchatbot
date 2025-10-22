@@ -21,16 +21,16 @@
       "aiColor": "#212529"
     },
     "chat": {
-      "endpoint": "https://api.marsmind.co/custom-im/chat-messages",
-      "client": "jprefund",
-      "secret": "RhTJXR6mGYlxqZYX"
+      "endpoint": "https://www.lufitglobalselling.com/custom-im/chat-messages",
+      "client": "test_custom_channel",
+      "secret": "test_123"
     },
     "s3": {
-      "endpoint": "https://api.marsmind.co/custom-im/chat-messages",
-      "accessKeyId": "AKIAQMEY6F4FYLFGR4ZL",
-      "secretAccessKey": "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",
+      "endpoint": "https://www.lufitglobalselling.com:9002",
+      "accessKeyId": "2C6TQkqTA8SMrIZWtxF5",
+      "secretAccessKey": "81huSRW0pNmd8iRpTSbXot5pK3JHBlEwxLLeOhMh",
       "region": "ap-northeast-1",
-      "bucketName":"marsmindwebresources", 
+      "bucketName":"test", 
       "addressing_style": "path",
       "s3ForcePathStyle": true,
       "signatureVersion": "v4"
