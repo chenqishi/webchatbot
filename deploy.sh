@@ -66,7 +66,7 @@ while IFS= read -r target_dir || [[ -n "$target_dir" ]]; do
     fi
     # 直接复制dist目录内容到目标目录，排除所有包含public的路径
     echo "部署到: $target_dir"
-    if rsync -av --exclude='*/config/*' --exclude='config/*' dist/ "$target_dir/"; then
+    if rsync -av --exclude='*config*' --exclude='config*' dist/ "$target_dir/"; then
         echo "✓ 成功部署到: $target_dir"
         ((deploy_count++))
     else
