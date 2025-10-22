@@ -33,7 +33,7 @@ echo "创建临时目录: $TEMP_DIR"
 
 # 复制dist目录内容到临时目录，但排除assets目录（保留服务器上的配置文件）
 echo "准备部署文件..."
-rsync -av --exclude='assets/' dist/ "$TEMP_DIR/"
+rsync -av --exclude='assets/' --exclude='public/' dist/ "$TEMP_DIR/"
 
 # 读取部署路径文件并部署到每个目录
 echo "开始部署到目标目录..."
@@ -66,9 +66,15 @@ while IFS= read -r target_dir || [[ -n "$target_dir" ]]; do
         mkdir -p "$target_dir"
     fi
     
-    # 部署文件到目标目录
+    # 备份重要目录（如果存在）
+    if [ -d "$target_dir/public" ]; then
+        echo "备份public目录: $target_dir/public -> $target_dir/public.backup.$(date +%Y%m%d_%H%M%S)"
+        cp -r "$target_dir/public" "$target_dir/public.backup.$(date +%Y%m%d_%H%M%S)" 2>/dev/null || true
+    fi
+    
+    # 部署文件到目标目录（不使用--delete，避免删除目标目录中的其他文件）
     echo "部署到: $target_dir"
-    if rsync -av --delete "$TEMP_DIR/" "$target_dir/"; then
+    if rsync -av "$TEMP_DIR/" "$target_dir/"; then
         echo "✓ 成功部署到: $target_dir"
         ((deploy_count++))
     else
