@@ -34,14 +34,14 @@ export class AudioRecorder {
       this.isRecording = true
       
     } catch (error) {
-      throw new Error(`无法访问麦克风: ${error}`)
+      throw new Error(`Unable to access microphone: ${error}`)
     }
   }
 
   stopRecording(): Promise<Blob> {
     return new Promise((resolve, reject) => {
       if (!this.mediaRecorder || !this.isRecording) {
-        reject(new Error('录音未开始'))
+        reject(new Error('Recording not started'))
         return
       }
 

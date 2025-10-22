@@ -1,5 +1,4 @@
 import { getConfig } from '../config'
-const ENDPOINT = getConfig().chat.endpoint || '/custom-im/chat-messages'
 import md5 from 'blueimp-md5'
 
 type SendPayload = {
@@ -24,6 +23,10 @@ type SendPayload = {
 export async function sendChatMessage(urlParams,content: string, files: any[] = [], event_type: string ='website_dialog') {
   const nowSec = Math.floor(Date.now() / 1000)
   const cfg = getConfig()
+  
+  // 获取 endpoint，支持完整 URL 或相对路径
+  const endpoint = cfg.chat.endpoint || '/custom-im/chat-messages'
+  
   const client: string = String(cfg.chat.client || '')
   const secret: string = String(cfg.chat.secret || '')
   const signature = md5(secret + String(nowSec) + client)
@@ -49,7 +52,7 @@ export async function sendChatMessage(urlParams,content: string, files: any[] = 
   const timeout = setTimeout(() => controller.abort(), 120000)
 
   try {
-    const res = await fetch(ENDPOINT, {
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -75,9 +78,9 @@ export async function sendChatMessage(urlParams,content: string, files: any[] = 
       
   } catch (err: any) {
     if (err?.name === 'AbortError') {
-      throw new Error('请求超时，请稍后再试。')
+      throw new Error('Request timeout, please try again later.')
     }
-    throw new Error(err?.message || '发送失败')
+    throw new Error(err?.message || 'Send failed')
   } finally {
     clearTimeout(timeout)
   }

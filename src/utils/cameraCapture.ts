@@ -32,13 +32,13 @@ export class CameraCapture {
       // this.videoElement.style.height = 'auto'
       // return this.videoElement
     } catch (error) {
-      throw new Error(`无法访问摄像头: ${error}`)
+      throw new Error(`Unable to access camera: ${error}`)
     }
   }
 
   capturePhoto(): string | null {
     if (!this.videoElement) {
-      throw new Error('摄像头未初始化')
+      throw new Error('Camera not initialized')
     }
 
     try {
@@ -47,7 +47,7 @@ export class CameraCapture {
       const context = canvas.getContext('2d')
       
       if (!context) {
-        throw new Error('无法创建canvas上下文')
+        throw new Error('Unable to create canvas context')
       }
 
       // 设置canvas尺寸
@@ -60,7 +60,7 @@ export class CameraCapture {
       // 转换为base64图片
       return canvas.toDataURL('image/jpeg', 0.8)
     } catch (error) {
-      throw new Error(`拍照失败: ${error}`)
+      throw new Error(`Photo capture failed: ${error}`)
     }
   }
 

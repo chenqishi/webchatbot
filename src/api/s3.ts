@@ -74,7 +74,7 @@ export async function uploadFileToS3(file: File, fileType: FileType): Promise<Up
       file_type: fileType
     }
   } catch (error: any) {
-    throw new Error(`上传失败: ${error.message}`)
+    throw new Error(`Upload failed: ${error.message}`)
   }
 }
 
@@ -87,5 +87,5 @@ export function getFileType(file: File): FileType {
   } else if (file.type.startsWith('webm/')) {
     return 'audio'
   }
-  throw new Error('不支持的文件类型')
+  throw new Error('Unsupported file type')
 }
