@@ -42,6 +42,8 @@ deploy_count=0
 error_count=0
 
 # 使用更可靠的while循环读取方式，处理最后一行无换行符的情况
+# 临时禁用set -e，避免read命令的退出码影响循环
+set +e
 while IFS= read -r target_dir || [[ -n "$target_dir" ]]; do
     # 去除行尾的\r字符（处理Windows CRLF换行符）
     target_dir=${target_dir%$'\r'}
@@ -75,6 +77,8 @@ while IFS= read -r target_dir || [[ -n "$target_dir" ]]; do
     fi
     
 done < "$DEPLOY_PATH_FILE"
+# 重新启用set -e
+set -e
 
 # 清理临时目录
 echo "清理临时目录..."
