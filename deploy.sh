@@ -37,12 +37,21 @@ rsync -av --exclude='public/assets/' dist/ "$TEMP_DIR/"
 
 # 读取部署路径文件并部署到每个目录
 echo "开始部署到目标目录..."
+echo "读取部署路径文件: $DEPLOY_PATH_FILE"
 deploy_count=0
 error_count=0
 
-while IFS= read -r target_dir; do
+# 使用更可靠的while循环读取方式，处理最后一行无换行符的情况
+while IFS= read -r target_dir || [[ -n "$target_dir" ]]; do
+    # 去除行尾的\r字符（处理Windows CRLF换行符）
+    target_dir=${target_dir%$'\r'}
+    
+    # 调试信息：显示读取到的行
+    echo "读取到行: '$target_dir'"
+    
     # 跳过空行和注释行
     if [[ -z "$target_dir" || "$target_dir" =~ ^[[:space:]]*# ]]; then
+        echo "跳过空行或注释行"
         continue
     fi
     
