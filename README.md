@@ -6,6 +6,7 @@ AI Chat (Vue3 + Vite)
 # 使用任一包管理器
 npm i
 npm run dev
+npm run build
 ```
 
 - 页面最大内容宽度：770px，自适应居中。
