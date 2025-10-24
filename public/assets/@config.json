@@ -33,6 +33,7 @@
       "bucketName":"test", 
       "addressing_style": "path",
       "s3ForcePathStyle": true,
-      "signatureVersion": "v4"
+      "signatureVersion": "v4",
+      "useSignatureUrl": true
     }
   }

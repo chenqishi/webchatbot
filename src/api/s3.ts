@@ -58,19 +58,28 @@ export async function uploadFileToS3(file: File, fileType: FileType): Promise<Up
 
     const result = await s3.upload(uploadParams).promise()
     
-    // 生成预签名URL用于浏览
-    const signedUrlParams = {
-      Bucket: s3Config.bucketName,
-      Key: fileName,
-      Expires: 3600*24 // 有效期（秒）
-    };
+    // 根据配置决定使用签名URL还是拼接URL
+    let fileUrl: string
+    const useSignatureUrl = s3Config.useSignatureUrl !== false // 默认为 true
     
-    const signedUrl = s3.getSignedUrl('getObject', signedUrlParams);
-    console.log('图片浏览URL（24小时内有效）:', signedUrl);
+    if (useSignatureUrl) {
+      // 生成预签名URL用于浏览
+      const signedUrlParams = {
+        Bucket: s3Config.bucketName,
+        Key: fileName,
+        Expires: 3600*24 // 有效期（秒）
+      };
+      
+      fileUrl = s3.getSignedUrl('getObject', signedUrlParams);
+      console.log('图片浏览URL（24小时内有效）:', fileUrl);
+    } else {
+      // 使用拼接URL: {endpoint}/{bucketName}/{filename}
+      fileUrl = `${s3Config.endpoint}/${s3Config.bucketName}/${fileName}`;
+      console.log('图片浏览URL（拼接）:', fileUrl);
+    }
     
-   
     return {
-      content: signedUrl,
+      content: fileUrl,
       file_type: fileType
     }
   } catch (error: any) {
