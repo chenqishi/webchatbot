@@ -64,7 +64,6 @@
             type="button"
             @click="startRecording"
             :disabled="sending"
-            title="Start Recording"
           >
           <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M12 2.5A2.5 2.5 0 0 1 14.5 5v6a2.5 2.5 0 0 1-5 0V5A2.5 2.5 0 0 1 12 2.5M7.5 5a4.5 4.5 0 0 1 9 0v6a4.5 4.5 0 1 1-9 0zm-2 4a1 1 0 0 0-2 0v2c0 4.213 3.26 7.928 7.5 8.44V21H7.3a1 1 0 1 0 0 2h9.4a1 1 0 1 0 0-2H13v-1.56c4.24-.512 7.5-4.227 7.5-8.44V9a1 1 0 1 0-2 0v2c0 3.46-2.915 6.5-6.5 6.5S5.5 14.46 5.5 11z" clip-rule="evenodd"></path></svg>
           </button>
@@ -75,13 +74,8 @@
             class="stop-record-btn" 
             type="button"
             @click="stopRecording"
-            title="Stop Recording"
           >
-            <div class="record-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
+            <div class="stop-icon"></div>
           </button>
           
           <!-- 录音时长显示 -->
@@ -94,7 +88,6 @@
             type="button"
             @click="startCamera"
             :disabled="sending || isRecording || isCapturing"
-            title="Take Photo"
             style="display: none;"
           >
           <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="12" rx="2" ry="2"/><circle cx="12" cy="13" r="3"/><path d="m7 7 2-2h6l2 2"/></svg>
@@ -133,7 +126,7 @@
                 <img v-if="file.file_type === 'image'" :src="file.content" :alt="'Image'" class="file-image" />
                 <audio v-else-if="file.file_type === 'audio'" :src="file.content" controls class="file-audio" />
                 <video v-else-if="file.file_type === 'video'" :src="file.content" controls class="file-video" />
-                <div class="file-document" v-else><a :href="file.content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M3.75 7h16.563c0 .48-.007 1.933-.016 3.685.703.172 1.36.458 1.953.837V5.937a2 2 0 0 0-2-2h-6.227a3 3 0 0 1-1.015-.176L9.992 2.677A3 3 0 0 0 8.979 2.5h-5.23a2 2 0 0 0-1.999 2v14.548a2 2 0 0 0 2 2h10.31a6.5 6.5 0 0 1-1.312-2H3.75S3.742 8.5 3.75 7m15.002 14.5a.514.514 0 0 0 .512-.454c.24-1.433.451-2.169.907-2.625.454-.455 1.186-.666 2.611-.907a.513.513 0 0 0-.002-1.026c-1.423-.241-2.155-.453-2.61-.908-.455-.457-.666-1.191-.906-2.622a.514.514 0 0 0-.512-.458.52.52 0 0 0-.515.456c-.24 1.432-.452 2.167-.907 2.624-.454.455-1.185.667-2.607.909a.514.514 0 0 0-.473.513.52.52 0 0 0 .47.512c1.425.24 2.157.447 2.61.9.455.454.666 1.19.907 2.634a.52.52 0 0 0 .515.452" clip-rule="evenodd"></path></svg><span>document文档</span></a></div>
+                <div class="file-document" v-else><a :href="file.content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M3.75 7h16.563c0 .48-.007 1.933-.016 3.685.703.172 1.36.458 1.953.837V5.937a2 2 0 0 0-2-2h-6.227a3 3 0 0 1-1.015-.176L9.992 2.677A3 3 0 0 0 8.979 2.5h-5.23a2 2 0 0 0-1.999 2v14.548a2 2 0 0 0 2 2h10.31a6.5 6.5 0 0 1-1.312-2H3.75S3.742 8.5 3.75 7m15.002 14.5a.514.514 0 0 0 .512-.454c.24-1.433.451-2.169.907-2.625.454-.455 1.186-.666 2.611-.907a.513.513 0 0 0-.002-1.026c-1.423-.241-2.155-.453-2.61-.908-.455-.457-.666-1.191-.906-2.622a.514.514 0 0 0-.512-.458.52.52 0 0 0-.515.456c-.24 1.432-.452 2.167-.907 2.624-.454.455-1.185.667-2.607.909a.514.514 0 0 0-.473.513.52.52 0 0 0 .47.512c1.425.24 2.157.447 2.61.9.455.454.666 1.19.907 2.634a.52.52 0 0 0 .515.452" clip-rule="evenodd"></path></svg><span>Document</span></a></div>
               </div>
             </div>
             <div class="message-text" v-html="renderMarkdown(message.text)"></div>
@@ -154,14 +147,8 @@
         <!-- 等待回复状态 -->
         <div v-if="sending" class="message-item assistant">
           <!-- <div class="avatar">AI</div> -->
-          <div class="message-content">
-            <div class="loading-message">
-              <div class="loading-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-            </div>
+          <div class="loading-dot-container">
+            <div class="loading-dot"></div>
           </div>
         </div>
       </div>
@@ -213,7 +200,6 @@
               type="button"
               @click="startRecording"
               :disabled="sending"
-              title="Start Recording"
             >
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M12 2.5A2.5 2.5 0 0 1 14.5 5v6a2.5 2.5 0 0 1-5 0V5A2.5 2.5 0 0 1 12 2.5M7.5 5a4.5 4.5 0 0 1 9 0v6a4.5 4.5 0 1 1-9 0zm-2 4a1 1 0 0 0-2 0v2c0 4.213 3.26 7.928 7.5 8.44V21H7.3a1 1 0 1 0 0 2h9.4a1 1 0 1 0 0-2H13v-1.56c4.24-.512 7.5-4.227 7.5-8.44V9a1 1 0 1 0-2 0v2c0 3.46-2.915 6.5-6.5 6.5S5.5 14.46 5.5 11z" clip-rule="evenodd"></path></svg>
             </button>
@@ -224,13 +210,8 @@
               class="stop-record-btn" 
               type="button"
               @click="stopRecording"
-              title="Stop Recording"
             >
-            <div class="record-dots">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
+              <div class="stop-icon"></div>
             </button>
             
             <!-- 录音时长显示 -->
@@ -244,7 +225,6 @@
               type="button"
               @click="startCamera"
               :disabled="sending || isRecording || isCapturing"
-              title="Take Photo"
               style="display: none;"
             >
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="12" rx="2" ry="2"/><circle cx="12" cy="13" r="3"/><path d="m7 7 2-2h6l2 2"/></svg>
@@ -280,7 +260,7 @@
       <div class="camera-overlay" @click="cancelPhoto"></div>
       <div class="camera-container">
         <div class="camera-header">
-          <h3>拍照</h3>
+          <h3>Take Photo</h3>
           <button class="close-btn" @click="cancelPhoto">×</button>
         </div>
         <div class="camera-preview">
@@ -299,15 +279,15 @@
       <div class="photo-overlay" @click="cancelPhoto"></div>
       <div class="photo-container">
         <div class="photo-header">
-          <h3>预览照片</h3>
+          <h3>Preview Photo</h3>
           <button class="close-btn" @click="cancelPhoto">×</button>
         </div>
         <div class="photo-preview">
           <img :src="capturedPhoto" alt="Captured photo" />
         </div>
         <div class="photo-controls">
-          <button class="retake-btn" @click="retakePhoto">重拍</button>
-          <button class="confirm-btn" @click="confirmPhoto">确定</button>
+          <button class="retake-btn" @click="retakePhoto">Retake</button>
+          <button class="confirm-btn" @click="confirmPhoto">Confirm</button>
         </div>
       </div>
     </div>
@@ -443,13 +423,13 @@ async function handleFileSelect(event: Event) {
   try {
     const fileType = getFileType(file)
     const uploadedFile = await uploadFileToS3(file, fileType)
-    // 加入待发送队列，不立即发送
+    // Add to pending queue, don't send immediately
     pendingFiles.value.push(uploadedFile)
   } catch (error: any) {
-    console.error('文件上传失败:', error)
-    alert(`文件上传失败: ${error.message}`)
+    console.error('File upload failed:', error)
+    alert(`File upload failed: ${error.message}`)
   } finally {
-    // 清空文件输入
+    // Clear file input
     if (target) target.value = ''
   }
 }
@@ -568,7 +548,7 @@ async function sendToAI(userMsg: Msg) {
       const reply: Msg = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        text: '（AI未返回内容）',
+        text: '(No response from AI)',
         time: Date.now()
       }
       messages.value.push(reply)
@@ -578,7 +558,7 @@ async function sendToAI(userMsg: Msg) {
     const errMsg: Msg = {
       id: crypto.randomUUID(),
       role: 'assistant',
-      text: `请求失败：${e?.message || e}`,
+      text: `Request failed: ${e?.message || e}`,
       time: Date.now()
     }
     messages.value.push(errMsg)
@@ -641,10 +621,10 @@ async function handleSend() {
   await sendToAI(userMsg)
 }
 
-// 录音控制函数
+// Recording control functions
 async function startRecording() {
   if (!AudioRecorder.isSupported()) {
-    alert('您的浏览器不支持录音功能')
+    alert('Your browser does not support audio recording')
     return
   }
 
@@ -653,12 +633,12 @@ async function startRecording() {
     isRecording.value = true
     recordingDuration.value = 0
     
-    // 开始计时
+    // Start timer
     recordingTimer.value = window.setInterval(() => {
       recordingDuration.value++
     }, 1000)
   } catch (error: any) {
-    alert(`录音失败: ${error.message}`)
+    alert(`Recording failed: ${error.message}`)
   }
 }
 
@@ -666,7 +646,7 @@ async function stopRecording() {
   try {
     const audioBlob = await audioRecorder.stopRecording()
     
-    // 停止计时
+    // Stop timer
     if (recordingTimer.value) {
       clearInterval(recordingTimer.value)
       recordingTimer.value = null
@@ -674,19 +654,19 @@ async function stopRecording() {
     
     isRecording.value = false
     
-    // 如果录音时间太短，不发送
+    // Don't send if recording is too short
     if (recordingDuration.value < 1) {
-      alert('录音时间太短，请重新录音')
+      alert('Recording too short, please try again')
       return
     }
     
-    // 转换为File对象并上传
+    // Convert to File object and upload
     const audioFile = audioRecorder.blobToFile(audioBlob, `recording_${Date.now()}.webm`)
     await handleAudioUpload(audioFile)
     
     recordingDuration.value = 0
   } catch (error: any) {
-    alert(`停止录音失败: ${error.message}`)
+    alert(`Stop recording failed: ${error.message}`)
     isRecording.value = false
     recordingDuration.value = 0
   }
@@ -696,7 +676,7 @@ async function handleAudioUpload(audioFile: File) {
   try {
     const uploadedFile = await uploadFileToS3(audioFile, 'audio')
 
-    // 创建包含音频文件的消息
+    // Create message with audio file
     const userMsg: Msg = {
       id: crypto.randomUUID(),
       role: 'user',
@@ -708,28 +688,28 @@ async function handleAudioUpload(audioFile: File) {
     messages.value.push(userMsg)
     scrollToBottom()
     
-    // 发送到AI
+    // Send to AI
     await sendToAI(userMsg)
 
-    // 语音加入待发送队列
+    // Add audio to pending queue
     // pendingFiles.value.push(uploadedFile)
   } catch (error: any) {
-    console.error('音频上传失败:', error)
-    alert(`音频上传失败: ${error.message}`)
+    console.error('Audio upload failed:', error)
+    alert(`Audio upload failed: ${error.message}`)
   }
 }
 
-// 格式化录音时长显示
+// Format recording duration display
 function formatDuration(seconds: number): string {
   const mins = Math.floor(seconds / 60)
   const secs = seconds % 60
   return `${mins}:${secs.toString().padStart(2, '0')}`
 }
 
-// 拍照控制函数
+// Camera control functions
 async function startCamera() {
   if (!CameraCapture.isSupported()) {
-    alert('您的浏览器不支持摄像头功能')
+    alert('Your browser does not support camera')
     return
   }
 
@@ -740,7 +720,7 @@ async function startCamera() {
       cameraCapture.initializeCamera(cameraPreview.value)
     })
     
-    // 将video元素添加到预览容器
+    // Add video element to preview container
     // nextTick(() => {
     //   if (cameraPreview.value && videoElement) {
     //     cameraPreview.value.innerHTML = ''
@@ -748,7 +728,7 @@ async function startCamera() {
     //   }
     // })
   } catch (error: any) {
-    alert(`启动摄像头失败: ${error.message}`)
+    alert(`Failed to start camera: ${error.message}`)
     isCapturing.value = false
   }
 }
@@ -763,7 +743,7 @@ function capturePhoto() {
     }
   } catch (error: any) {
     cameraCapture.stopCamera()
-    alert(`拍照失败: ${error.message}`)
+    alert(`Failed to capture photo: ${error.message}`)
   }
 }
 
@@ -776,23 +756,23 @@ async function confirmPhoto() {
   if (!capturedPhoto.value) return
 
   try {
-    // 转换为File对象
+    // Convert to File object
     const photoFile = cameraCapture.dataURLToFile(capturedPhoto.value, `photo_${Date.now()}.jpg`)
     
-    // 上传到S3并加入待发送队列
+    // Upload to S3 and add to pending queue
     const uploadedFile = await uploadFileToS3(photoFile, 'image')
     pendingFiles.value.push(uploadedFile)
     
-    // 清理状态
+    // Clean up state
     capturedPhoto.value = null
     isCapturing.value = false
 
-    // 不立即发送
+    // Don't send immediately
 
 
   } catch (error: any) {
-    console.error('图片上传失败:', error)
-    alert(`图片上传失败: ${error.message}`)
+    console.error('Image upload failed:', error)
+    alert(`Image upload failed: ${error.message}`)
   }
 }
 
@@ -804,7 +784,7 @@ function cancelPhoto() {
 }
 
 onMounted(() => {
-  // 加载运行时配置
+  // Load runtime configuration
   loadConfig().then(() => {
     const cfg = getConfig()
     ui.value = {
@@ -824,13 +804,13 @@ onMounted(() => {
       color: cfg.message.userColor
     }
   })
-  // 初始消息为空，不显示欢迎词
+  // Initial message is empty, no welcome message
   messages.value = []
   const params = getUrlParams();
   urlParams.value.from_user_id = params.from_user_id || crypto.randomUUID();
   urlParams.value.from_user_nickname = params.from_user_nickname || 'anonymous';
 
-  // 初始化调用接口
+  // Initialize API call
   sendChatMessage(
     urlParams.value,
     'reset', 
@@ -1240,22 +1220,12 @@ onMounted(() => {
   justify-content: center;
 }
 
-.record-dots {
-  display: inline-flex;
-  gap: 2px;
-}
-
-.record-dots span {
-  width: 4px;
-  height: 4px;
-  background: var(--muted);
+.stop-icon {
+  width: 12px;
+  height: 12px;
+  background: #dc3545;
   border-radius: 50%;
-  animation: pulse 1.4s infinite ease-in-out;
 }
-
-.record-dots span:nth-child(1) { animation-delay: -0.32s; }
-.record-dots span:nth-child(2) { animation-delay: -0.16s; }
-.record-dots span:nth-child(3) { animation-delay: 0s; }
 
 .recording-duration {
   color: var(--accent);
