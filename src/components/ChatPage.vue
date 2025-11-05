@@ -571,6 +571,18 @@ async function sendToAI(userMsg: Msg) {
 async function handleRefresh() {
   messages.value = []
   scrollToBottom()
+  
+  // Send reset command to server
+  try {
+    await sendChatMessage(
+      urlParams.value,
+      'reset', 
+      [],
+      'cmd_dialog'
+    )
+  } catch (error: any) {
+    console.error('Reset request failed:', error)
+  }
 }
 
 // 处理键盘事件
@@ -624,7 +636,7 @@ async function handleSend() {
 // Recording control functions
 async function startRecording() {
   if (!AudioRecorder.isSupported()) {
-    alert('Your browser does not support audio recording')
+    alert('If you want to use voice messages, please allow microphone access.')
     return
   }
 
@@ -638,7 +650,7 @@ async function startRecording() {
       recordingDuration.value++
     }, 1000)
   } catch (error: any) {
-    alert(`Recording failed: ${error.message}`)
+    alert('If you want to use voice messages, please allow microphone access.')
   }
 }
 
@@ -784,6 +796,31 @@ function cancelPhoto() {
 }
 
 onMounted(() => {
+  // Fix viewport height for mobile browsers with address bar
+  const setVH = () => {
+    const vh = window.innerHeight * 0.01
+    document.documentElement.style.setProperty('--vh', `${vh}px`)
+  }
+  
+  setVH()
+  window.addEventListener('resize', setVH)
+  window.addEventListener('orientationchange', setVH)
+  
+  // Prevent pull-to-refresh on mobile
+  document.body.addEventListener('touchmove', (e) => {
+    // Allow scrolling within the main-content area
+    const target = e.target as HTMLElement
+    const mainContent = document.querySelector('.main-content')
+    
+    if (mainContent && mainContent.contains(target)) {
+      // Allow scrolling in main content
+      return
+    }
+    
+    // Prevent pull-to-refresh for other areas
+    e.preventDefault()
+  }, { passive: false })
+
   // Load runtime configuration
   loadConfig().then(() => {
     const cfg = getConfig()
@@ -825,7 +862,15 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   background: var(--bg);
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
 }
 
 /* 头部样式 */
@@ -895,6 +940,9 @@ onMounted(() => {
   overflow-y: auto;
   display: flex;
   justify-content: center;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 .welcome-section {

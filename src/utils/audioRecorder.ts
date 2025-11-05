@@ -3,10 +3,32 @@ export class AudioRecorder {
   private audioChunks: Blob[] = []
   private stream: MediaStream | null = null
   private isRecording = false
+  private mimeType = ''
+
+  // Get supported MIME type
+  private getSupportedMimeType(): string {
+    const types = [
+      'audio/webm',
+      'audio/webm;codecs=opus',
+      'audio/ogg;codecs=opus',
+      'audio/mp4',
+      'audio/aac',
+      'audio/mpeg',
+      'audio/wav'
+    ]
+    
+    for (const type of types) {
+      if (MediaRecorder.isTypeSupported(type)) {
+        return type
+      }
+    }
+    
+    return '' // Use default
+  }
 
   async startRecording(): Promise<void> {
     try {
-      // 请求麦克风权限
+      // Request microphone permission
       this.stream = await navigator.mediaDevices.getUserMedia({ 
         audio: {
           echoCancellation: true,
@@ -15,22 +37,24 @@ export class AudioRecorder {
         } 
       })
       
-      // 创建 MediaRecorder
-      this.mediaRecorder = new MediaRecorder(this.stream, {
-        mimeType: 'video/mp4'
-      })
+      // Get supported MIME type
+      this.mimeType = this.getSupportedMimeType()
+      
+      // Create MediaRecorder
+      const options = this.mimeType ? { mimeType: this.mimeType } : {}
+      this.mediaRecorder = new MediaRecorder(this.stream, options)
       
       this.audioChunks = []
       
-      // 监听数据可用事件
+      // Listen for data available event
       this.mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
           this.audioChunks.push(event.data)
         }
       }
       
-      // 开始录音
-      this.mediaRecorder.start(100) // 每100ms收集一次数据
+      // Start recording
+      this.mediaRecorder.start(100) // Collect data every 100ms
       this.isRecording = true
       
     } catch (error) {
@@ -46,7 +70,8 @@ export class AudioRecorder {
       }
 
       this.mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(this.audioChunks, { type: 'video/mp4' })
+        const mimeType = this.mimeType || this.mediaRecorder?.mimeType || 'audio/webm'
+        const audioBlob = new Blob(this.audioChunks, { type: mimeType })
         this.cleanup()
         resolve(audioBlob)
       }
@@ -69,13 +94,13 @@ export class AudioRecorder {
     this.audioChunks = []
   }
 
-  // 将 Blob 转换为 File 对象
+  // Convert Blob to File object
   blobToFile(blob: Blob, fileName: string): File {
     return new File([blob], fileName, { type: blob.type })
   }
 
-  // 检查浏览器是否支持录音
+  // Check if browser supports recording
   static isSupported(): boolean {
-    return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
+    return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder)
   }
 }

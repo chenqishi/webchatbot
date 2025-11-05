@@ -8,11 +8,16 @@
   --accentHover: #1e3a8a;
   --lightGray: #f1f3f4;
   --darkGray: #5f6368;
+  --vh: 1vh;
 }
 
 * { box-sizing: border-box; }
 html{
   font-size: 14px;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
 }
 html, body, #app { height: 100%; margin: 0; padding: 0; }
 body { 
@@ -20,6 +25,17 @@ body {
   background: var(--bg); 
   color: var(--fg); 
   line-height: 1.5;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overscroll-behavior: none;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+#app {
+  overflow: hidden;
+  position: relative;
 }
 h1,h2,h3,h4,h5,h6,p,span,div {
   margin: 0;
