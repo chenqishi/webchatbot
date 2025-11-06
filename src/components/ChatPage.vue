@@ -41,7 +41,6 @@
             v-model="draft"
             class="message-input"
             :placeholder="ui.main.placeholder"
-            :disabled="sending"
             rows="1"
             @keydown="handleKeyDown"
             @input="adjustHeight"
@@ -177,7 +176,6 @@
             v-model="draft"
             class="message-input"
             :placeholder="ui.main.placeholder"
-            :disabled="sending"
             rows="1"
             @keydown="handleKeyDown"
             @input="adjustHeight"
@@ -313,7 +311,6 @@ const messageQueue = ref([])
 const currentIndex = ref(0)
 
 const messages = ref<Msg[]>([
-  { id: 'm1', role: 'assistant', text: '', time: Date.now() }
 ])
 const draft = ref('')
 const sending = ref(false)
@@ -795,6 +792,16 @@ function cancelPhoto() {
   cameraCapture.stopCamera()
 }
 
+function escapeHtml(unsafe) {
+  if (!unsafe) return '';
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 onMounted(() => {
   // Fix viewport height for mobile browsers with address bar
   const setVH = () => {
@@ -841,9 +848,24 @@ onMounted(() => {
       color: cfg.message.userColor
     }
   })
-  // Initial message is empty, no welcome message
-  messages.value = []
+
   const params = getUrlParams();
+  if(params.content){
+    //sending.value = true
+    messages.value.push({ 
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        text: '',
+        time: Date.now()
+      })
+    setTimeout(()=>{
+      //sending.value = false;
+      simulateStreamingDisplay(escapeHtml(params.content))
+    },200)
+  }else{
+    messages.value =[]
+  }
+
   urlParams.value.from_user_id = params.from_user_id || crypto.randomUUID();
   urlParams.value.from_user_nickname = params.from_user_nickname || 'anonymous';
 
