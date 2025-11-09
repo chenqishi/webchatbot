@@ -584,6 +584,10 @@ async function handleRefresh() {
 
 // 处理键盘事件
 function handleKeyDown(event: KeyboardEvent) {
+  if (event.isComposing || event.keyCode === 229) {
+    return
+  }
+
   if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault()
     handleSend()
